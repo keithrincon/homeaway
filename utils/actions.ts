@@ -13,9 +13,9 @@ import { uploadImage } from './supabase';
 
 const getAuthUser = async () => {
   const user = await currentUser();
-  if (!user) {
-    throw new Error('You must be lgged in to access this route');
-  }
+
+  if (!user) throw new Error('You must be logged in to access this route');
+
   if (!user.privateMetadata.hasProfile) redirect('/profile/create');
   return user;
 };
@@ -32,7 +32,7 @@ export const createProfileAction = async (
 ) => {
   try {
     const user = await currentUser();
-    if (!user) throw new Error('Please log in to creae a profile');
+    if (!user) throw new Error('Please login to create a profile');
     const rawData = Object.fromEntries(formData);
     const validatedFields = validateWithZodSchema(profileSchema, rawData);
 
@@ -50,10 +50,9 @@ export const createProfileAction = async (
       },
     });
   } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'An error occurred',
-    };
+    return renderError(error);
   }
+
   redirect('/');
 };
 
@@ -69,7 +68,7 @@ export const fetchProfileImage = async () => {
       profileImage: true,
     },
   });
-
+  // profile can potentially be null if user hasn't created profile yet
   return profile?.profileImage;
 };
 
