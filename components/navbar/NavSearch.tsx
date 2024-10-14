@@ -1,17 +1,14 @@
-'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '../ui/input';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
-import { useState, useEffect } from 'react';
 
 function NavSearch() {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
 
-  const [search, setSearch] = useState(
-    searchParams.get('search')?.toString() || ''
-  );
+  const searchValue = searchParams.get('search')?.toString() || ''; // Extract value
+  const [search, setSearch] = useState(searchValue);
 
   const handleSearch = useDebouncedCallback((value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -24,10 +21,10 @@ function NavSearch() {
   }, 500);
 
   useEffect(() => {
-    if (!searchParams.get('search')) {
+    if (!searchValue) {
       setSearch('');
     }
-  }, [searchParams.get('search')]);
+  }, [searchValue]); // Use the extracted value here
 
   return (
     <Input
