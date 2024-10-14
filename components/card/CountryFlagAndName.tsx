@@ -2,6 +2,7 @@ import { findCountryByCode } from '@/utils/countries';
 import React from 'react';
 
 function CountryFlagAndName({ countryCode }: { countryCode: string }) {
+  
   const validCountry = findCountryByCode(countryCode)!;
 
   const countryName =

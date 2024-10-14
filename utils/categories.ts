@@ -58,7 +58,6 @@ export const categories: Category[] = [
     label: 'caravan',
     icon: TbCaravan,
   },
-
   {
     label: 'tiny',
     icon: PiLighthouse,

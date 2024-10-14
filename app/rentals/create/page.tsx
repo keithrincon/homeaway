@@ -19,7 +19,7 @@ function CreatePropertyPage() {
       <div className='border p-8 rounded'>
         <h3 className='text-lg mb-4 font-medium'>General Info</h3>
         <FormContainer action={createPropertyAction}>
-          <div className='grid md: grid-cols-2 gap-8 mb-4'>
+          <div className='grid md:grid-cols-2 gap-8 mb-4'>
             <FormInput
               name='name'
               type='text'
