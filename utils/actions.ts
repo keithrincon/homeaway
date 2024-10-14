@@ -131,7 +131,6 @@ export const updateProfileImageAction = async (
   }
 };
 
-
 export const createPropertyAction = async (
   prevState: any,
   formData: FormData
@@ -139,7 +138,7 @@ export const createPropertyAction = async (
   const user = await getAuthUser();
   try {
     const rawData = Object.fromEntries(formData);
-    const file = formData.get("image") as File;
+    const file = formData.get('image') as File;
     const validatedFields = validateWithZodSchema(propertySchema, rawData);
     const validatedFile = validateWithZodSchema(imageSchema, { image: file });
     const fullPath = await uploadImage(validatedFile.image);
@@ -154,7 +153,7 @@ export const createPropertyAction = async (
   } catch (error) {
     return renderError(error);
   }
-  redirect("/");
+  redirect('/');
 };
 
 // export const createPropertyAction = async (
@@ -180,7 +179,7 @@ export const createPropertyAction = async (
 //     return renderError(error);
 //   }
 //   redirect('/');
-};
+// };
 
 export const fetchProperties = async ({
   search = '',
