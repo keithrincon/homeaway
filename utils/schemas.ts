@@ -3,13 +3,13 @@ import { ZodSchema } from 'zod';
 
 export const profileSchema = z.object({
   firstName: z.string().min(2, {
-    message: 'first name must be at leat 2 characters',
+    message: 'first name must be at least 2 characters ',
   }),
   lastName: z.string().min(2, {
-    message: 'last name must be at leat 2 characters',
+    message: 'last name must be at least 2 characters ',
   }),
   username: z.string().min(2, {
-    message: 'username must be at leat 2 characters',
+    message: 'username must be at least 2 characters ',
   }),
 });
 
@@ -17,12 +17,14 @@ export function validateWithZodSchema<T>(
   schema: ZodSchema<T>,
   data: unknown
 ): T {
+  // The safeParse method in Zod is used to validate data against a Zod schema and provides a safe way to handle validation. It returns an object that contains either the validated data or the validation errors
   const result = schema.safeParse(data);
 
   if (!result.success) {
     const errors = result.error.errors.map((error) => error.message);
-    throw new Error(errors.join(', '));
+    throw new Error(errors.join(','));
   }
+
   return result.data;
 }
 
@@ -32,15 +34,15 @@ export const imageSchema = z.object({
 
 function validateFile() {
   const maxUploadSize = 1024 * 1024;
-  const acceptedFilesTypes = ['image/'];
+  const acceptedFileTypes = ['image/'];
   return z
-    .custom<File>()
+    .instanceof(File)
     .refine((file) => {
       return !file || file.size <= maxUploadSize;
-    }, 'File size must be less than 1MB')
+    }, `File size must be less than 1 MB`)
     .refine((file) => {
       return (
-        !file || acceptedFilesTypes.some((type) => file.type.startsWith(type))
+        !file || acceptedFileTypes.some((type) => file.type.startsWith(type))
       );
     }, 'File must be an image');
 }
