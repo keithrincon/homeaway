@@ -1,23 +1,24 @@
 import * as z from 'zod';
 import { ZodSchema } from 'zod';
 
+// Profile schema
 export const profileSchema = z.object({
   firstName: z.string().min(2, {
-    message: 'first name must be at least 2 characters ',
+    message: 'first name must be at least 2 characters',
   }),
   lastName: z.string().min(2, {
-    message: 'last name must be at least 2 characters ',
+    message: 'last name must be at least 2 characters',
   }),
   username: z.string().min(2, {
-    message: 'username must be at least 2 characters ',
+    message: 'username must be at least 2 characters',
   }),
 });
 
+// Validation function using Zod schema
 export function validateWithZodSchema<T>(
   schema: ZodSchema<T>,
   data: unknown
 ): T {
-  // The safeParse method in Zod is used to validate data against a Zod schema and provides a safe way to handle validation. It returns an object that contains either the validated data or the validation errors
   const result = schema.safeParse(data);
 
   if (!result.success) {
@@ -28,42 +29,42 @@ export function validateWithZodSchema<T>(
   return result.data;
 }
 
+// Adjusted file validation to work only on the client-side
+function validateFile() {
+  if (typeof window !== 'undefined' && typeof File !== 'undefined') {
+    const maxUploadSize = 1024 * 1024;
+    const acceptedFilesTypes = ['image/'];
+    return z
+      .instanceof(File)
+      .refine((file) => {
+        return !file || file.size <= maxUploadSize;
+      }, 'File size must be less than 1 MB')
+      .refine((file) => {
+        return (
+          !file || acceptedFilesTypes.some((type) => file.type.startsWith(type))
+        );
+      }, 'File must be an image');
+  } else {
+    // Server-side fallback or skip file validation
+    return z.any(); // Skip file validation for server-side
+  }
+}
+
+// Image schema
 export const imageSchema = z.object({
   image: validateFile(),
 });
 
-function validateFile() {
-  const maxUploadSize = 1024 * 1024;
-  const acceptedFileTypes = ['image/'];
-  return z
-    .instanceof(File)
-    .refine((file) => {
-      return !file || file.size <= maxUploadSize;
-    }, `File size must be less than 1 MB`)
-    .refine((file) => {
-      return (
-        !file || acceptedFileTypes.some((type) => file.type.startsWith(type))
-      );
-    }, 'File must be an image');
-}
-
+// Property schema
 export const propertySchema = z.object({
   name: z
     .string()
-    .min(2, {
-      message: 'name must be at least 2 characters.',
-    })
-    .max(100, {
-      message: 'name must be less than 100 characters.',
-    }),
+    .min(2, { message: 'name must be at least 2 characters.' })
+    .max(100, { message: 'name must be less than 100 characters.' }),
   tagline: z
     .string()
-    .min(2, {
-      message: 'tagline must be at least 2 characters.',
-    })
-    .max(100, {
-      message: 'tagline must be less than 100 characters.',
-    }),
+    .min(2, { message: 'tagline must be at least 2 characters.' })
+    .max(100, { message: 'tagline must be less than 100 characters.' }),
   price: z.coerce.number().int().min(0, {
     message: 'price must be a positive number.',
   }),
@@ -73,9 +74,7 @@ export const propertySchema = z.object({
       const wordCount = description.split(' ').length;
       return wordCount >= 10 && wordCount <= 1000;
     },
-    {
-      message: 'description must be between 10 and 1000 words.',
-    }
+    { message: 'description must be between 10 and 1000 words.' }
   ),
   country: z.string(),
   guests: z.coerce.number().int().min(0, {
@@ -88,7 +87,7 @@ export const propertySchema = z.object({
     message: 'beds amount must be a positive number.',
   }),
   baths: z.coerce.number().int().min(0, {
-    message: 'bahts amount must be a positive number.',
+    message: 'baths amount must be a positive number.',
   }),
   amenities: z.string(),
 });

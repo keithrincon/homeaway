@@ -33,6 +33,7 @@ export const createProfileAction = async (
   try {
     const user = await currentUser();
     if (!user) throw new Error('Please login to create a profile');
+
     const rawData = Object.fromEntries(formData);
     const validatedFields = validateWithZodSchema(profileSchema, rawData);
 
@@ -155,31 +156,6 @@ export const createPropertyAction = async (
   }
   redirect('/');
 };
-
-// export const createPropertyAction = async (
-//   prevState: any,
-//   formData: FormData
-// ): Promise<{ message: string }> => {
-//   const user = await getAuthUser();
-//   try {
-//     const rawData = Object.fromEntries(formData);
-//     const file = formData.get('image') as File;
-//     const validatedFields = validateWithZodSchema(propertySchema, rawData);
-//     const validatedFile = validateWithZodSchema(imageSchema, { image: file });
-//     const fullPath = await uploadImage(validatedFile.image);
-
-//     await db.property.create({
-//       data: {
-//         ...validatedFields,
-//         image: fullPath,
-//         profileId: user.id,
-//       },
-//     });
-//   } catch (error) {
-//     return renderError(error);
-//   }
-//   redirect('/');
-// };
 
 export const fetchProperties = async ({
   search = '',
