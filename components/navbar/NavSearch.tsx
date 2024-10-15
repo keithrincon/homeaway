@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+'use client';
 import { Input } from '../ui/input';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
+import { useState, useEffect } from 'react';
 
 function NavSearch() {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
 
-  const searchValue = searchParams.get('search')?.toString() || ''; // Extract value
-  const [search, setSearch] = useState(searchValue);
-
+  const [search, setSearch] = useState(
+    searchParams.get('search')?.toString() || ''
+  );
   const handleSearch = useDebouncedCallback((value: string) => {
     const params = new URLSearchParams(searchParams);
     if (value) {
@@ -21,10 +22,10 @@ function NavSearch() {
   }, 500);
 
   useEffect(() => {
-    if (!searchValue) {
+    if (!searchParams.get('search')) {
       setSearch('');
     }
-  }, [searchValue]); // Use the extracted value here
+  }, [searchParams.get('search')]);
 
   return (
     <Input
@@ -39,5 +40,4 @@ function NavSearch() {
     />
   );
 }
-
 export default NavSearch;
