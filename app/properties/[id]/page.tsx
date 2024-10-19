@@ -1,7 +1,7 @@
+import React from 'react';
 import FavoriteToggleButton from '@/components/card/FavoriteToggleButton';
 import PropertyRating from '@/components/card/PropertyRating';
 import Amenities from '@/components/properties/Amenities';
-import BookingCalendar from '@/components/properties/BookingCalendar';
 import BreadCrumbs from '@/components/properties/BreadCrumbs';
 import Description from '@/components/properties/Description';
 import ImageContainer from '@/components/properties/ImageContainer';
@@ -11,16 +11,23 @@ import UserInfo from '@/components/properties/UserInfo';
 import PropertyReviews from '@/components/reviews/PropertyReviews';
 import SubmitReview from '@/components/reviews/SubmitReview';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import { fetchPropertyDetails, FindExistingReview } from '@/utils/actions';
-import dynamic from 'next/dynamic';
 import { redirect } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
 import { auth } from '@clerk/nextjs/server';
-import React from 'react';
 
 const DynamicMap = dynamic(
   () => import('@/components/properties/PropertyMap'),
   { ssr: false, loading: () => <Skeleton className='h-[400px] w-full' /> }
+);
+
+const DynamicBookingWrapper = dynamic(
+  () => import('@/components/booking/BookingWrapper'),
+  {
+    ssr: false,
+    loading: () => <Skeleton className='h-[200px] w-full' />,
+  }
 );
 
 async function PropertyDetailsPage({ params }: { params: { id: string } }) {
@@ -64,7 +71,11 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
         </div>
         <div className='lg:col-span-4 flex flex-col items-center'>
           {/* calender */}
-          <BookingCalendar />
+          <DynamicBookingWrapper
+            propertyId={property.id}
+            price={property.price}
+            bookings={property.bookings}
+          />
         </div>
       </section>
       {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
