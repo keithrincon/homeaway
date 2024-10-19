@@ -1,7 +1,7 @@
 import React from 'react';
 import { Skeleton } from '../ui/skeleton';
 
-const LoadingTable = ({ rows }: { row?: number }) => {
+const LoadingTable = ({ rows }: { rows?: number }) => {
   const tableRows = Array.from({ length: rows || 5 }, (_, i) => {
     return (
       <div className='mb-4' key={i}>
